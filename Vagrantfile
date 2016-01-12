@@ -1,11 +1,23 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# Check and install required Vagrant plugins
+required_plugins = ["vagrant-hostmanager", "vagrant-vbguest", "vagrant-cachier"]
+required_plugins.each do |plugin|
+    if !Vagrant.has_plugin?(plugin) then
+        system "echo Not installed required plugin: #{plugin} ..."
+            system "vagrant plugin install #{plugin}"
+    end
+end
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure(2) do |config|
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
@@ -27,7 +39,7 @@ Vagrant.configure(2) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "private_network", ip: "192.168.50.50"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -38,7 +50,7 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder ".", "/home/bitrix/www"
+  config.vm.synced_folder "..", "/home/bitrix/www"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -54,6 +66,17 @@ Vagrant.configure(2) do |config|
   #
   # View the documentation for the provider you are using for more
   # information on available options.
+
+  # Set entries in hosts file
+  # config.hostmanager.enabled = true
+  # config.hostmanager.manage_host = true
+  # config.hostmanager.ignore_private_ip = false
+  # config.hostmanager.include_offline = true
+  # config.hostmanager.aliases =  ["bitrix.dev", "www.bitrix.dev"]
+
+  if Vagrant.has_plugin?("vagrant-cachier")
+      config.cache.scope = :box
+  end
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at
